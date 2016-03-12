@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:p="http://www.springframework.org/schema/p"
+
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+          http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+">
+<context:property-placeholder location="classpath:jdbc.properties" />
+  <context:component-scan base-package="id.co.fif.ws.client.deskcall" />
+  <context:annotation-config />
+  <tx:annotation-driven />
+  <!--bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" p:driverClassName="${jdbc.driver}" p:url="${jdbc.url}" p:username="${jdbc.username}" p:password="${jdbc.password}" /-->
+  <bean id="dataSource"
+      class="org.apache.commons.dbcp.BasicDataSource"
+      p:driverClassName="${jdbc.driver}"
+      p:url="${jdbc.url}"
+      p:username="${jdbc.username}"
+      p:password="${jdbc.password}"
+      p:initialSize="${pool.initialSize}"
+      p:maxActive="${pool.maxActive}"
+      p:maxWait="${pool.maxWait}"
+  />
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean" 
+        p:dataSource-ref="dataSource" p:configLocation="classpath:hibernate.cfg.xml" p:packagesToScan="id.co.fif.ws.client.deskcall.bean" />
+  <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager" p:sessionFactory-ref="sessionFactory" />
+</beans>
